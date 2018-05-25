@@ -1,0 +1,15 @@
+/* 
+    ./.babelrc
+*/  
+{
+  "presets":[
+    ["env", {"modules": false}],
+    "stage-1",
+    "react"
+	],
+  "env": {
+    "test": {
+      "presets": [["env"], "react"]
+    }
+  }  	
+}
