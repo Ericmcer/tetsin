@@ -4,7 +4,11 @@ import { render } from "react-dom";
 import { HashRouter, Route, Switch } from "react-router-dom";
 import { Provider } from "react-redux";
 
-import Store from "./redux/store";
+import { Store } from "./redux/store";
+
+import Dashboard from "./pages/Dashboard";
+import List from "./pages/List";
+import ListCreate from "./pages/List-Create";
 
 render(
 	<HashRouter>
@@ -12,8 +16,8 @@ render(
 			<div>
 				<div className="page-content-wrapper" id="page-content-wrapper">
 					<Route path="/" exact component={Dashboard} />
-					<Route path="/list/:id" component={List} />
 					<Route path="/list/create" component={ListCreate} />
+					<Route path="/list/view/:id" component={List} />
 				</div>
 			</div>
 		</Provider>
