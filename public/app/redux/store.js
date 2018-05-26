@@ -5,39 +5,57 @@ import { createStore, combineReducers } from "redux";
 const listReducer = (state = [], action) => {
 	switch (action.type) {
 		case "LIST_READ":
-			state.lists = action.data || [];
+			return { ...state, lists: action.data };
+		case "LIST_CREATED":
+			state.lists = [...state.lists, action.data];
 			return state;
 		default:
 			return state;
 	}
 };
-const listActions = {
+const ListActions = {
 	read: data => {
 		return {
 			type: "LIST_READ",
 			data: data
 		};
+	},
+	create: data => {
+		return {
+			type: "LIST_CREATED",
+			data: data
+		};
 	}
 };
+const list = listReducer;
 
 const listItemReducer = (state = [], action) => {
 	switch (action.type) {
 		case "LISTITEM_READ":
-			state.listItems = action.data || [];
+			return { ...state, listItems: action.data };
+		case "LISTITEM_CREATED":
+			state.listItems = [...state.listItems, action.data];
 			return state;
 		default:
 			return state;
 	}
 };
-const listItemActions = {
+const listItem = listItemReducer;
+const ListItemActions = {
 	read: data => {
 		return {
 			type: "LISTITEM_READ",
 			data: data
 		};
+	},
+	create: data => {
+		return {
+			type: "LISTITEM_CREATED",
+			data: data
+		};
 	}
 };
-const rootReducer = combineReducers({ listReducer, listItemReducer });
+const rootReducer = combineReducers({ list, listItem });
 
 const fetchData = model => {
 	return new Promise((resolve, reject) => {
@@ -45,9 +63,9 @@ const fetchData = model => {
 		let url = "/api/" + model;
 		xhr.open("GET", url, true);
 		xhr.setRequestHeader("Content-Type", "application/json");
-		xhr.onreadystatechange = function() {
+		xhr.onreadystatechange = () => {
 			if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-				return resolve(res);
+				return resolve(JSON.parse(xhr.responseText));
 			} else if (xhr.readyState === XMLHttpRequest.DONE && xhr.status !== 200) {
 				return reject(xhr.responseText);
 			}
@@ -57,22 +75,22 @@ const fetchData = model => {
 };
 
 //init store: each data type has array of items, status messages are an object
-const store = createStore(rootReducer, {
-	listReducer: {
+const Store = createStore(rootReducer, {
+	list: {
 		lists: []
 	},
-	listItemReducer: {
+	listItem: {
 		listItems: []
 	}
 });
 
 // populate store
 fetchData("list")
-	.then(lists => store.dispatch(listActions.read(lists)))
+	.then(lists => Store.dispatch(ListActions.read(lists)))
 	.catch(err => console.error(err));
 
 fetchData("listitem")
-	.then(listitems => store.dispatch(listItemActions.read(listitems)))
+	.then(listitems => Store.dispatch(ListItemActions.read(listitems)))
 	.catch(err => console.error(err));
 
-export default store;
+export { Store, ListItemActions, ListActions };
