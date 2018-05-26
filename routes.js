@@ -5,7 +5,10 @@ const mongoose = require("mongoose");
 mongoose.Promise = Promise;
 
 const List = mongoose.model("List", {
-	name: {
+	title: {
+		type: String
+	},
+	details: {
 		type: String
 	},
 	owner: {
